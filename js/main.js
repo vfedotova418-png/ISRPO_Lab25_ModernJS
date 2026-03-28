@@ -144,13 +144,13 @@
 // simplePromise
 //     .then((result) => console.log("Результат:", result))
 //     .catch((error) => console.log("Ошибка:", error));
-// function delay(ms) {
-//     return new Promise((resolve) => {
-//         setTimeout(() => {
-//             resolve(`Прошло ${ms} миллисекунд`);
-//         }, ms);
-//     });
-// }
+function delay(ms) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(`Прошло ${ms} миллисекунд`);
+        }, ms);
+    });
+}
 // delay(1000)
 //     .then((message) => console.log(message));
 // function fetchUserData(userId) {
@@ -192,19 +192,127 @@
 //     .then((finalResult) => console.log("Финальный результат:", finalResult))
 //     .catch((error) => console.log("Ошибка в цепочке:", error));
 
-function checkInventory(product) { 
-    const inventory = ["Шоколад", "Какао", "Молоко", "Мандарины"]
-    return new Promise((resolve, reject) => {
-        if (inventory.includes(product)) {
-            resolve(`Товар ${product} есть в наличии`);
-        } else {
-            reject(`Товара ${product} нет в наличии`);
-        }
-    });
+// function checkInventory(product) { 
+//     const inventory = ["Шоколад", "Какао", "Молоко", "Мандарины"]
+//     return new Promise((resolve, reject) => {
+//         if (inventory.includes(product)) {
+//             resolve(`Товар ${product} есть в наличии`);
+//         } else {
+//             reject(`Товара ${product} нет в наличии`);
+//         }
+//     });
+// }
+// checkInventory("Шоколад")
+//     .then((result) => console.log("Результат:", result))
+//     .catch((error) => console.log("Ошибка:", error));
+// checkInventory("Бананы")
+//     .then((result) => console.log("Результат:", result))
+//     .catch((error) => console.log("Ошибка:", error));
+
+// console.log("Async/Await");
+// async function greet() {
+//     return "Привет!";
+// }
+// greet().then((message) => console.log(message));
+// function getWeather() {
+//     return new Promise((resolve) => {
+//         setTimeout(() => {
+//             resolve({ temp: 22, condition: "Солнечно" });
+//         }, 1000);
+//     });
+// }
+// async function showWeather() {
+//     console.log("Загрузка погоды...");
+//     const weather = await getWeather();
+//     console.log(`Температура: ${weather.temp}°C, ${weather.condition}`);
+// }
+// showWeather();
+
+// async function fetchData(shouldFail) {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             if (shouldFail) {
+//                 reject("Ошибка при загрузке данных");
+//             } else {
+//                 resolve({ data: "Важные данные" });
+//             }
+//         }, 800);
+//     });
+// }
+// async function getData() {
+//     try {
+//         const result = await fetchData(false);
+//         console.log("Успешно:", result.data);
+
+//         const failedResult = await fetchData(true);
+//         console.log("Это не выполнится");
+//     } catch (error) {
+//         console.log("Поймана ошибка:", error);
+//     }
+// }
+// getData();
+
+// async function cookDinner() {
+//     console.log("Начинаем готовить...");
+
+//     const pasta = await delay(1000).then(() => "Паста готова");
+//     console.log(pasta);
+
+//     const sauce = await delay(500).then(() => "Соус готов");
+//     console.log(sauce);
+
+//     const salad = await delay(700).then(() => "Салат готов");
+//     console.log(salad);
+
+//     return "Ужин готов!";
+// }
+// cookDinner().then((result) => console.log(result));
+// async function cookDinnerFast() {
+//     console.log("Готовим всё одновременно...");
+
+//     const [pasta, sauce, salad] = await Promise.all([
+//         delay(1000).then(() => "Паста готова"),
+//         delay(500).then(() => "Соус готов"),
+//         delay(700).then(() => "Салат готов"),
+//     ]);
+
+//     console.log(pasta, sauce, salad);
+//     return "Ужин готов быстрее!";
+// }
+// cookDinnerFast().then((result) => console.log(result));
+
+async function processOrder(notAvailable, notDone) {
+    try {
+        let availability = await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (notAvailable) {
+                    reject("Товара нет в наличии");
+                } else {
+                    resolve("Товар есть в наличии");
+                }
+            }, 1000);
+        });
+        console.log(availability);
+        let cost = await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve("Стоимость товара: 2300 руб.");
+            }, 1000);
+        });
+        console.log(cost);
+        let confirm = await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (notDone) {
+                    reject("К сожалению, мы не смогли подтвердить заказ");
+                } else {
+                    resolve("Заказ подтверждён");
+                }
+            }, 1000);
+        });
+        console.log(confirm);
+
+        console.log("Спасибо за заказ");
+    } catch (error) {
+        console.log("Ошибка:", error);
+    }
 }
-checkInventory("Шоколад")
-    .then((result) => console.log("Результат:", result))
-    .catch((error) => console.log("Ошибка:", error));
-checkInventory("Бананы")
-    .then((result) => console.log("Результат:", result))
-    .catch((error) => console.log("Ошибка:", error));
+processOrder(false, false);
